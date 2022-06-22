@@ -8,12 +8,11 @@ import (
 )
 
 var defaultOptions = &options{
-		Repanic: false,
-		WaitForDelivery: false,
-		ReportOn: ReportAlways,
-		Timeout: 1 * time.Second,
+	Repanic:         false,
+	WaitForDelivery: false,
+	ReportOn:        ReportAlways,
+	Timeout:         1 * time.Second,
 }
-
 
 type options struct {
 	// Repanic configures whether Sentry should repanic after recovery.
@@ -26,8 +25,9 @@ type options struct {
 	Timeout time.Duration
 
 	ReportOn func(error) bool
-}
 
+	StripSpans bool
+}
 
 func ReportAlways(error) bool {
 	return true

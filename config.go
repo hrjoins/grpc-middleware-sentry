@@ -65,3 +65,13 @@ func (r *reportOnOption) Apply(o *options) {
 func WithReportOn(r reporter) Option {
 	return &reportOnOption{ReportOn: r}
 }
+
+type stripParentSpansOption struct{}
+
+func (r *stripParentSpansOption) Apply(o *options) {
+	o.StripSpans = true
+}
+
+func WithStripParentSpan() Option {
+	return &stripParentSpansOption{}
+}

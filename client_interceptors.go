@@ -18,12 +18,16 @@ func UnaryClientInterceptor(opts ...Option) grpc.UnaryClientInterceptor {
 		invoker grpc.UnaryInvoker,
 		callOpts ...grpc.CallOption) error {
 
+		if o.StripSpans {
+			ctx = sentry.StripSpanContextKeyFromContext(ctx)
+		}
+
 		hub := sentry.GetHubFromContext(ctx)
 		if hub == nil {
 			hub = sentry.CurrentHub().Clone()
 			ctx = sentry.SetHubOnContext(ctx, hub)
 		}
-		
+
 		hub.Scope().SetTransaction(method)
 
 		span := sentry.StartSpan(ctx, "grpc.client")
@@ -51,12 +55,16 @@ func StreamClientInterceptor(opts ...Option) grpc.StreamClientInterceptor {
 		streamer grpc.Streamer,
 		callOpts ...grpc.CallOption) (grpc.ClientStream, error) {
 
+		if o.StripSpans {
+			ctx = sentry.StripSpanContextKeyFromContext(ctx)
+		}
+
 		hub := sentry.GetHubFromContext(ctx)
 		if hub == nil {
 			hub = sentry.CurrentHub().Clone()
 			ctx = sentry.SetHubOnContext(ctx, hub)
 		}
-		
+
 		hub.Scope().SetTransaction(method)
 
 		span := sentry.StartSpan(ctx, "grpc.client")
