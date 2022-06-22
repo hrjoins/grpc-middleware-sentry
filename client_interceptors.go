@@ -79,7 +79,7 @@ func StreamClientInterceptor(opts ...Option) grpc.StreamClientInterceptor {
 
 				spanOptions = append(spanOptions, func(s *sentry.Span) {
 					s.TraceID = parentTraceID
-					s.SpanID = parentSpanID
+					s.ParentSpanID = parentSpanID
 				})
 			}
 		}
