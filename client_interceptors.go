@@ -29,7 +29,7 @@ func UnaryClientInterceptor(opts ...Option) grpc.UnaryClientInterceptor {
 
 				spanOptions = append(spanOptions, func(s *sentry.Span) {
 					s.TraceID = parentTraceID
-					s.SpanID = parentSpanID
+					s.ParentSpanID = parentSpanID
 				})
 			}
 		}
