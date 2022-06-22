@@ -71,14 +71,17 @@ func StreamClientInterceptor(opts ...Option) grpc.StreamClientInterceptor {
 
 		if o.StripSpans {
 			parentSpan := sentry.SpanFromContext(ctx)
-			parentSpanID := parentSpan.SpanID
-			parentTraceID := parentSpan.TraceID
-			ctx = sentry.StripSpanContextKeyFromContext(ctx)
 
-			spanOptions = append(spanOptions, func(s *sentry.Span) {
-				s.TraceID = parentTraceID
-				s.SpanID = parentSpanID
-			})
+			if parentSpan != nil {
+				parentSpanID := parentSpan.SpanID
+				parentTraceID := parentSpan.TraceID
+				ctx = sentry.StripSpanContextKeyFromContext(ctx)
+
+				spanOptions = append(spanOptions, func(s *sentry.Span) {
+					s.TraceID = parentTraceID
+					s.SpanID = parentSpanID
+				})
+			}
 		}
 
 		hub := sentry.GetHubFromContext(ctx)
