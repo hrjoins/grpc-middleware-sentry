@@ -2,9 +2,8 @@ package grpc_sentry
 
 import (
 	"context"
-	"google.golang.org/grpc/metadata"
-
 	"github.com/getsentry/sentry-go"
+	"google.golang.org/grpc/metadata"
 
 	"google.golang.org/grpc"
 )
@@ -18,8 +17,18 @@ func UnaryClientInterceptor(opts ...Option) grpc.UnaryClientInterceptor {
 		invoker grpc.UnaryInvoker,
 		callOpts ...grpc.CallOption) error {
 
+		var spanOptions []sentry.SpanOption
+
 		if o.StripSpans {
+			parentSpan := sentry.SpanFromContext(ctx)
+			parentSpanID := parentSpan.SpanID
+			parentTraceID := parentSpan.TraceID
 			ctx = sentry.StripSpanContextKeyFromContext(ctx)
+
+			spanOptions = append(spanOptions, func(s *sentry.Span) {
+				s.TraceID = parentTraceID
+				s.SpanID = parentSpanID
+			})
 		}
 
 		hub := sentry.GetHubFromContext(ctx)
@@ -30,7 +39,7 @@ func UnaryClientInterceptor(opts ...Option) grpc.UnaryClientInterceptor {
 
 		hub.Scope().SetTransaction(method)
 
-		span := sentry.StartSpan(ctx, "grpc.client")
+		span := sentry.StartSpan(ctx, "grpc.client", spanOptions...)
 		ctx = span.Context()
 		md := metadata.Pairs("sentry-trace", span.ToSentryTrace())
 		ctx = metadata.NewOutgoingContext(ctx, md)
@@ -55,8 +64,18 @@ func StreamClientInterceptor(opts ...Option) grpc.StreamClientInterceptor {
 		streamer grpc.Streamer,
 		callOpts ...grpc.CallOption) (grpc.ClientStream, error) {
 
+		var spanOptions []sentry.SpanOption
+
 		if o.StripSpans {
+			parentSpan := sentry.SpanFromContext(ctx)
+			parentSpanID := parentSpan.SpanID
+			parentTraceID := parentSpan.TraceID
 			ctx = sentry.StripSpanContextKeyFromContext(ctx)
+
+			spanOptions = append(spanOptions, func(s *sentry.Span) {
+				s.TraceID = parentTraceID
+				s.SpanID = parentSpanID
+			})
 		}
 
 		hub := sentry.GetHubFromContext(ctx)
@@ -67,7 +86,7 @@ func StreamClientInterceptor(opts ...Option) grpc.StreamClientInterceptor {
 
 		hub.Scope().SetTransaction(method)
 
-		span := sentry.StartSpan(ctx, "grpc.client")
+		span := sentry.StartSpan(ctx, "grpc.client", spanOptions...)
 		ctx = span.Context()
 		md := metadata.Pairs("sentry-trace", span.ToSentryTrace())
 		ctx = metadata.NewOutgoingContext(ctx, md)

@@ -17,4 +17,4 @@ require (
 	google.golang.org/protobuf v1.25.0 // indirect
 )
 
-replace github.com/getsentry/sentry-go v0.13.0 => github.com/GalaxiteMC/sentry-go v0.13.1
+replace github.com/getsentry/sentry-go v0.13.0 => github.com/GalaxiteMC/sentry-go v0.14.0
