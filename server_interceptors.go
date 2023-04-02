@@ -87,7 +87,6 @@ func StreamServerInterceptor(opts ...Option) grpc.StreamServerInterceptor {
 		stream := grpc_middleware.WrapServerStream(ss)
 		stream.WrappedContext = ctx
 
-		hub.Scope().SetTransaction(info.FullMethod)
 		defer recoverWithSentry(hub, ctx, o)
 
 		err := handler(srv, stream)
