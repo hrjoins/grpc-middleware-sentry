@@ -60,6 +60,7 @@ func UnaryServerInterceptor(opts ...Option) grpc.UnaryServerInterceptor {
 			hub.CaptureException(err)
 		}
 		span.Status = toSpanStatus(status.Code(err))
+		defer span.Finish()
 
 		return resp, err
 	}
@@ -99,6 +100,7 @@ func StreamServerInterceptor(opts ...Option) grpc.StreamServerInterceptor {
 			hub.CaptureException(err)
 		}
 		span.Status = toSpanStatus(status.Code(err))
+		defer span.Finish()
 
 		return err
 	}
