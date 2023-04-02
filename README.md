@@ -12,7 +12,7 @@ import (
     "github.com/getsentry/sentry-go"
 
     grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-    grpc_sentry "github.com/johnbellone/grpc-middleware-sentry"
+    grpc_sentry "github.com/hrjoins/grpc-middleware-sentry"
 )
 
 func main() {
