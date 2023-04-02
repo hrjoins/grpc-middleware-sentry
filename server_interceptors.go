@@ -42,7 +42,7 @@ func UnaryServerInterceptor(opts ...Option) grpc.UnaryServerInterceptor {
 		}
 
 		md, _ := metadata.FromIncomingContext(ctx) // nil check in ContinueFromGrpcMetadata
-		span := sentry.StartSpan(ctx, "grpc.server", ContinueFromGrpcMetadata(md))
+		span := sentry.StartSpan(ctx, "grpc.server", sentry.TransactionName(info.FullMethod), ContinueFromGrpcMetadata(md))
 		ctx = span.Context()
 		defer span.Finish()
 
@@ -81,7 +81,7 @@ func StreamServerInterceptor(opts ...Option) grpc.StreamServerInterceptor {
 		}
 
 		md, _ := metadata.FromIncomingContext(ctx) // nil check in ContinueFromGrpcMetadata
-		span := sentry.StartSpan(ctx, "grpc.server", ContinueFromGrpcMetadata(md))
+		span := sentry.StartSpan(ctx, "grpc.server", sentry.TransactionName(info.FullMethod), ContinueFromGrpcMetadata(md))
 		ctx = span.Context()
 		defer span.Finish()
 
